@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!-- import Vue before Element -->
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <!-- import JavaScript -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <style>
+    html,body{
+      padding: 0;
+      margin: 0;
+      font-size: 12px;
+      color: #fff;
+      background: url('./bg1.png') repeat-x;
+      background-size: cover;
+    }
+    #app{
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .el-form-item__label{
+      font-size: 1.2em;
+      color: #fff;
+    }
+    .el-input,.el-select{
+      width: 220px;
+    }
+    .el-button--medium {
+      padding: 10px 36px;
+    }
+    .title{
+      width: 100%;
+      height: 30px;
+      line-height: 30px;
+      margin-top: 20px;
+      text-align: center;
+      /* color: #606266; */
+      letter-spacing: 2px;
+      font-size: 1.4em;
+      font-style: normal;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1 class="title">工程师注册</h1>
+    <div class="formBox">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="姓名:" prop="name" size="medium">
+          <el-input v-model="ruleForm.name" placeholder="请输入姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="城市:" prop="city" size="medium">
+          <el-cascader
+            clearable
+            :options="options"
+            v-model="ruleForm.city"
+            @change="handleChange">
+          </el-cascader>
+        </el-form-item>
+        <el-form-item label="电话:" prop="telephone" size="medium">
+          <el-input v-model="ruleForm.telephone" placeholder="请输入电话号码"></el-input>
+        </el-form-item>
+        <el-form-item label="微信号:" prop="wechart" size="medium">
+          <el-input v-model="ruleForm.wechart" error placeholder="请输入微信号"></el-input>
+        </el-form-item>
+        <el-form-item label="QQ号:" prop="qq" size="medium">
+          <el-input v-model="ruleForm.qq" placeholder="请输入QQ号"></el-input>
+        </el-form-item>
+        <el-form-item label="技术专长:" prop="goodat" size="medium">
+          <el-select v-model="ruleForm.goodat" placeholder="请选择">
+            <el-option label="电脑服务" value="电脑服务"></el-option>
+            <el-option label="网络维护" value="网络维护"></el-option>
+            <el-option label="服务器" value="服务器"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="属性:" prop="attribute" size="medium">
+          <el-select v-model="ruleForm.attribute" placeholder="请选择">
+            <el-option label="个人" value="1"></el-option>
+            <el-option label="服务商" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item size="medium">
+          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+          <el-button @click="resetForm('ruleForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
+</body>
+<script>
+  new Vue({
+    el: '#app',
+    data() {
+      var checktelephone = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('电话不能为空'));
+        }else if (typeof(value) !== typeof(1) ){
+          callback(new Error('只允许输入数字'));
+        }else if (value.length !== 11){
+          callback(new Error('长度为11位'));
+        }else {
+          callback();
+        }
+      };
+      return {
+        ruleForm: {
+          name: 'dsfv',
+          telephone: '',
+          wechart: 'dfv',
+          qq: 'dddf',
+          goodat: '电脑服务',
+          attribute: '个人',
+          city: ["北京", "朝阳区", "西二旗"]
+        },
+        options: [{
+          value: '北京',
+          label: '北京',
+          children: [{
+            value: '朝阳区',
+            label: '朝阳区',
+            children: [{
+              value: '北苑',
+              label: '北苑'
+            }, {
+              value: '西二旗',
+              label: '西二旗'
+            }, {
+              value: '回龙观',
+              label: '回龙观'
+            }, {
+              value: '回龙观1',
+              label: '回龙观1'
+            }, {
+              value: '回龙观2',
+              label: '回龙观2'
+            }, {
+              value: '回龙观3',
+              label: '回龙观3'
+            }, {
+              value: '回龙观4',
+              label: '回龙观4'
+            }, {
+              value: '回龙观5',
+              label: '回龙观5'
+            }, {
+              value: '霍营',
+              label: '霍营'
+            }]
+          }]
+        },{
+          value: '天津',
+          label: '天津',
+          children: [{
+            value: '武清区',
+            label: '武清区',
+            children: [{
+              value: '武清区1',
+              label: '武清区1'
+            }, {
+              value: '武清区2',
+              label: '武清区2'
+            }, {
+              value: '武清区3',
+              label: '武清区3'
+            }, {
+              value: '武清区4',
+              label: '武清区4'
+            }]
+          }]
+        }],
+        rules: {
+          name: [
+            { required: true, message: '请输入姓名', trigger: 'blur' }
+          ],
+          telephone: [
+            { validator: checktelephone, trigger: 'blur' },
+            { required: true, message: '请输入电话号码', trigger: 'blur' }
+            // { min: 11, max: 11, message: '请输入11位', trigger: 'blur' },
+            // { type: 'number', message: '只允许输入数字', trigger: 'blur' },
+          ],
+          // wechart: [
+          //   { required: true, message: '请输入微信号', trigger: 'blur' }
+          // ],
+          // qq: [
+          //   { required: true, message: '请输入QQ号', trigger: 'blur' }
+          // ],
+          goodat: [
+            { required: true, message: '请选择个人专长', trigger: 'change' }
+          ],
+          city: [
+            { required: true, message: '请选择城市', trigger: 'change' }
+          ],
+          attribute: [
+            { required: true, message: '请选择属性', trigger: 'change' }
+          ]
+        }
+      }
+    },
+    watch: {
+      telephone () {
+        let reg = /^1\d{10}$/
+        if(!reg.test(this.ruleForm.telephone)){
+          this.rules.telephone[1].message = '电话格式不正确'
+        }
+      }
+    },
+    methods: {
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+        // this.$refs[formName].validateField(this.ruleForm.telephone, errorMessage=>{
+        //   console.lof(errorMessage)
+        // })
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+      handleChange(value) {
+        console.log(value);
+      }
+    }
+  })
+</script>
+</html>
